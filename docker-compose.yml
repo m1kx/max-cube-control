@@ -3,10 +3,10 @@ services:
     image: ghcr.io/m1kx/max-cube-backend:latest
     environment:
       - CUBE_IP_ADDRESS=192.168.0.153
-      - APIKEY=testtoken
+      - APIKEY=secretpassword
     volumes:
-      - ./database.db:/app/database.db
+      - ./data:/app/data
   frontend:
     image: ghcr.io/m1kx/max-cube-frontend:latest
     ports:
-      - "3023:3000"
+      - "3000:3000"

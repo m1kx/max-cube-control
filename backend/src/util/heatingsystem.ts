@@ -262,7 +262,7 @@ export class HeatingSystemController {
     const message = `s:${payloadBase64}`;
     try {
       await this.client.sendMessageWithResponse(message);
-    } catch (error) {
+    } catch (_error) {
       await this.connect();
       await this.client.sendMessageWithResponse(message);
     }

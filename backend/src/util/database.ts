@@ -35,7 +35,9 @@ const create = (name: string) => {
   `);
 };
 
-const addCron = ({ cron, rfAdresses, temperature, name, oneTime }: StoreCron) => {
+const addCron = (
+  { cron, rfAdresses, temperature, name, oneTime }: StoreCron,
+) => {
   if (!db) {
     throw new Error("DB not initialized");
   }
@@ -46,7 +48,7 @@ const addCron = ({ cron, rfAdresses, temperature, name, oneTime }: StoreCron) =>
       JSON.stringify(rfAdresses),
       temperature,
       name,
-      oneTime
+      oneTime,
     ],
   );
 };
@@ -62,9 +64,13 @@ const getCrons = (): StoreCron[] => {
   if (!db) {
     throw new Error("DB not initialized");
   }
-  return db.query("SELECT cron, deviceAdresses, temperature, name, oneTime, enabled FROM crons")
+  return db.query(
+    "SELECT cron, deviceAdresses, temperature, name, oneTime, enabled FROM crons",
+  )
     .map(
-      ([cron, deviceAdresses, temperature, name, oneTime, enabled]): StoreCron => {
+      (
+        [cron, deviceAdresses, temperature, name, oneTime, enabled],
+      ): StoreCron => {
         return {
           cron: cron as string,
           rfAdresses: JSON.parse(deviceAdresses as string),
@@ -92,13 +98,16 @@ const updateCron = (cron: StoreCron) => {
       cron.name,
     ],
   );
-}
+};
 
 const getCronByName = (name: string): StoreCron | undefined => {
   if (!db) {
     throw new Error("DB not initialized");
   }
-  const cron = db.query("SELECT cron, deviceAdresses, temperature, name, oneTime, enabled FROM crons WHERE name = ?", [name]);
+  const cron = db.query(
+    "SELECT cron, deviceAdresses, temperature, name, oneTime, enabled FROM crons WHERE name = ?",
+    [name],
+  );
   if (cron.length === 0) {
     return undefined;
   }
@@ -110,7 +119,7 @@ const getCronByName = (name: string): StoreCron | undefined => {
     oneTime: cron[0][4] as boolean,
     enabled: (cron[0][5] as number) === 1,
   };
-}
+};
 
 const insert = (device: StoreDevice) => {
   if (!db) {
@@ -152,5 +161,5 @@ export const Database = {
   getCrons,
   removeCron,
   getCronByName,
-  updateCron
+  updateCron,
 };

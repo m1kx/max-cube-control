@@ -9,7 +9,20 @@ const router = new Router();
 await controller.connect();
 console.log("connected");
 
-Database.create(Deno.env.get("DATABASE_PATH") || "database.db");
+const dbPath = Deno.env.get("DATABASE_PATH") || "data/database.db";
+
+try {
+  await Deno.stat(dbPath);
+} catch (error) {
+  if (error instanceof Deno.errors.NotFound) {
+    await Deno.writeTextFile(dbPath, "");
+    console.log("Database file created:", dbPath);
+  } else {
+    throw error;
+  }
+}
+
+Database.create(dbPath);
 console.log("Created database");
 
 const deviceList = await controller.getDeviceList();
@@ -39,10 +52,10 @@ router.use((ctx, next) => {
 
 router.get("/auth", (ctx) => {
   ctx.response.body = {
-    success: true
-  }
+    success: true,
+  };
   return;
-})
+});
 
 interface ConnectRequestBody {
   name: string;
@@ -226,7 +239,7 @@ router.post("/updatecron", async (ctx) => {
     };
     return;
   }
-})
+});
 
 router.get("/alloff", async (ctx) => {
   const deviceList = await controller.getDeviceList();

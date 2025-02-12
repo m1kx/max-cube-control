@@ -1,0 +1,23 @@
+.form {
+    max-width: 340px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    width: 80%;
+}
+
+.input {
+    padding: 10px;
+    outline: none;
+    border: none;
+
+    &:active {
+        outline: none;
+        border: none;
+    }
+}
+
+.button {
+    padding: 10px;
+}

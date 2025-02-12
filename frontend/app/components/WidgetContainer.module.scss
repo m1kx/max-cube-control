@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  background-color: #D9D9D910;
+  border-radius: 3px 10px 10px 10px;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+
+.widgetLabel {
+  transform: translateY(2px);
+  color: rgb(108, 104, 104);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

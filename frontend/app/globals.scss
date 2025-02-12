@@ -1,0 +1,63 @@
+:root {
+  color: black;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: white;
+    --background: #353535;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  color: white;
+}
+
+body {
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+input {
+  padding: 3px 7px;
+  background-color: rgba(217, 217, 217, 0.062745098);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  outline: none;
+
+  &:active {
+    outline: none;
+    border: none;
+  }
+}
+
+input[type=checkbox] {
+  background-color: #353535;
+}
+
+button {
+  background-color: rgba(217, 217, 217, 0.062745098);
+  color: white;
+  border: none;
+  border-radius: 5px;
+}

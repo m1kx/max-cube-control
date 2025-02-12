@@ -1,0 +1,25 @@
+.container {
+  width: calc(50% - 5px);
+  min-width: 148px;
+  max-width: 180px;
+  aspect-ratio: 1/1;
+  background-color: #D9D9D910;
+  padding: 10px;
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  animation: loadingSpinner 1s linear infinite;
+}
+
+@keyframes loadingSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

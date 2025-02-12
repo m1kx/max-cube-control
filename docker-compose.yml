@@ -1,0 +1,13 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      - CUBE_IP_ADDRESS=192.168.0.153
+    volumes:
+      - ./database.db:/app/database.db
+  frontend:
+    build: ./frontend
+    ports:
+      - "3023:3000"
+    environment:
+      - SITE_ACCESS_TOKEN=testtoken

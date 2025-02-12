@@ -1,0 +1,22 @@
+$outside-spacing: 60px;
+
+.page {
+  margin: $outside-spacing;
+  display: grid;
+  grid-template-columns: 400px 400px;
+  column-gap: 10px;
+  row-gap: 10px;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 950px) {
+  .page {
+    grid-template-columns: 100%;
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  .page {
+    margin: 10px;
+  }
+}

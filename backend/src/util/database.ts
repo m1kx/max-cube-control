@@ -30,7 +30,8 @@ const create = (name: string) => {
       cron TEXT NOT NULL,
       deviceAdresses TEXT NOT NULL,
       temperature REAL NOT NULL,
-      oneTime BOOLEAN DEFAULT FALSE
+      oneTime BOOLEAN DEFAULT FALSE,
+      enabled BOOLEAN DEFAULT TRUE
     );
   `);
 };

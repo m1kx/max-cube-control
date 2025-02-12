@@ -37,6 +37,13 @@ router.use((ctx, next) => {
   return next();
 });
 
+router.get("/auth", (ctx) => {
+  ctx.response.body = {
+    success: true
+  }
+  return;
+})
+
 interface ConnectRequestBody {
   name: string;
 }

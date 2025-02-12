@@ -45,6 +45,6 @@ EXPOSE 3000
 
 ENV PORT=3000
 
-ENV BASE_API_URL="backend:8080"
+ENV BASE_API_URL="http://backend:8080"
 ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]

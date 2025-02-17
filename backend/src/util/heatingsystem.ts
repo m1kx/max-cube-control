@@ -92,7 +92,10 @@ class TcpClient {
     });
   }
 
-  sendMessageWithResponse(command: string): Promise<string> {
+  sendMessageWithResponse(
+    command: string,
+    shouldUseTimeout = true,
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!this.conn) {
         reject(new Error("Not connected"));
@@ -112,9 +115,11 @@ class TcpClient {
         reject(err);
       });
 
-      setTimeout(() => {
-        reject(new Error("TCP server response timeout"));
-      }, 5000);
+      if (shouldUseTimeout) {
+        setTimeout(() => {
+          reject(new Error("TCP server response timeout"));
+        }, 5000);
+      }
     });
   }
 
@@ -195,7 +200,7 @@ export class HeatingSystemController {
       const timeout = setTimeout(() => {
         reject(new Error("Timeout"));
       }, 59000);
-      this.client.sendMessageWithResponse("n:003c").then((response) => {
+      this.client.sendMessageWithResponse("n:003c", false).then((response) => {
         clearTimeout(timeout);
         const base64Data = response.slice(2).trim();
         const decodedData = decode(base64Data);

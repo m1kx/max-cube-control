@@ -244,7 +244,7 @@ router.post("/updatecron", async (ctx) => {
 router.get("/alloff", async (ctx) => {
   const deviceList = await controller.getDeviceList();
   for (const device of deviceList) {
-    await controller.setTemperature(device.rfAddress, 17);
+    await controller.setTemperature(device.rfAddress, 14);
   }
   ctx.response.body = {
     success: true,

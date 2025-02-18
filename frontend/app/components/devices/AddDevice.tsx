@@ -14,7 +14,7 @@ const AddDevice = (): ReactElement => {
 
   const connectDevice = async () => {
     setIsLoading(true);
-    connectNewDevice({
+    await connectNewDevice({
       name: inputValue,
     });
     setIsLoading(false);
@@ -30,9 +30,14 @@ const AddDevice = (): ReactElement => {
 
   const keyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setIsInputActive(false);
-      await connectDevice();
+      handleAdd();
     }
+  };
+
+  const handleAdd = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.stopPropagation();
+    setIsInputActive(false);
+    await connectDevice();
   };
 
   return (
@@ -44,16 +49,27 @@ const AddDevice = (): ReactElement => {
         })}
       >
         {isInputActive ? (
-          <input
-            type="text"
-            onKeyDown={keyDown}
-            onInput={inputChanged}
-            placeholder="device name"
-          />
+          <>
+            <input
+              type="text"
+              onKeyDown={keyDown}
+              onInput={inputChanged}
+              placeholder="device name"
+              className={styles.input}
+            />
+            <button onClick={handleAdd} className={styles.button}>
+              Add
+            </button>
+          </>
         ) : (
           <Plus />
         )}
       </div>
+      {isLoading && (
+        <p>
+          Hold boost button and let go as soon as countdown appears on screen
+        </p>
+      )}
     </div>
   );
 };

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { create } from 'zustand';
-import { Device } from '../types';
+import { create } from "zustand";
+import { Device } from "../types";
 
 export interface DeviceState {
-  devices: Device[]
+  devices: Device[];
 }
 
 export interface DeviceActions {
@@ -15,5 +15,8 @@ export interface DeviceActions {
 export const useDeviceStore = create<DeviceState & DeviceActions>((set) => ({
   devices: [],
   setDevices: (devices) => set({ devices }),
-  removeDevice: (rfAddress) => set((state) => ({ devices: state.devices.filter(device => device.rfAddress !== rfAddress) }))
-}))
+  removeDevice: (rfAddress) =>
+    set((state) => ({
+      devices: state.devices.filter((device) => device.rfAddress !== rfAddress),
+    })),
+}));

@@ -4,57 +4,71 @@ import { useCronStore } from "@/app/util/stores/cronStore";
 import { useDeviceStore } from "@/app/util/stores/deviceStore";
 import { Cron } from "@/app/util/types";
 import classNames from "classnames";
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, useState } from "react";
 import Plus from "../icons/Plus";
 import styles from "./AddCron.module.scss";
 
 import cronParser from "cron-parser";
 import cronstrue from "cronstrue";
-import { addNewCron } from "@/app/actions";
+import { addNewCron, updateCron } from "@/app/actions";
 
-const AddCron = (): ReactElement => {
+interface Props {
+  cron?: Cron;
+  onUpdateDone?: () => void;
+}
+
+const AddCron = ({ cron, onUpdateDone }: Props): ReactElement => {
+  const isUpdate = cron ? true : false;
+
   const deviceStore = useDeviceStore();
   const cronStore = useCronStore();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isInputActive, setIsInputActive] = useState(false);
-  const nameInput = useRef<HTMLInputElement>(null);
-  const cronInput = useRef<HTMLInputElement>(null);
-  const tempInput = useRef<HTMLInputElement>(null);
-  const oneTimeInput = useRef<HTMLInputElement>(null);
+  const [isInputActive, setIsInputActive] = useState(cron ? true : false);
+  const [nameValue, setNameValue] = useState(cron?.name ?? "");
+  const [cronValue, setCronValue] = useState(cron?.cron ?? "* * * * *");
+  const [tempValue, setTempValue] = useState(cron?.temperature ?? 21);
+  const [oneTimeValue, setOneTimeValue] = useState(cron?.oneTime ?? false);
+
+  const [checkedDevices, setCheckedDevices] = useState<string[]>(
+    cron?.rfAdresses ?? []
+  );
 
   const plusClicked = () => {
     setIsInputActive(true);
   };
 
   const addClicked = async () => {
+    if (!nameValue || !tempValue || !cronValue || !!oneTimeValue) {
+      return;
+    }
     setIsLoading(true);
     const newCron: Cron = {
-      cron: cronInput.current!.value,
-      name: nameInput.current!.value,
-      temperature: Number(tempInput.current!.value),
-      oneTime: oneTimeInput.current!.checked,
+      cron: cronValue,
+      name: nameValue,
+      temperature: tempValue,
+      oneTime: oneTimeValue,
       enabled: true,
-      rfAdresses: deviceStore.devices
-        .filter((device) => {
-          return (document.getElementById(device.name) as HTMLInputElement)
-            .checked;
-        })
-        .map((device) => device.rfAddress),
+      rfAdresses: checkedDevices,
     };
-    cronStore.addCron(newCron);
-    await addNewCron(newCron);
+    if (isUpdate) {
+      cronStore.updateCron(newCron);
+      await updateCron(newCron);
+      onUpdateDone?.();
+    } else {
+      cronStore.addCron(newCron);
+      await addNewCron(newCron);
+    }
     setIsInputActive(false);
     setIsLoading(false);
   };
 
-  const [cronExpression, setCronExpression] = useState("* * * * *");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
   const handleCronChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
-    setCronExpression(value);
+    setCronValue(value);
 
     try {
       cronParser.parseExpression(value);
@@ -82,8 +96,26 @@ const AddCron = (): ReactElement => {
             <div>
               {deviceStore.devices.map((device) => (
                 <div key={device.name} className={styles.deviceSelectElement}>
-                  <label htmlFor={device.name}>{device.name}</label>
-                  <input id={`${device.name}`} type="checkbox" />
+                  <label htmlFor={device.rfAddress}>{device.name}</label>
+                  <input
+                    onChange={(e) => {
+                      if (e.currentTarget.checked) {
+                        setCheckedDevices([
+                          ...checkedDevices,
+                          device.rfAddress,
+                        ]);
+                      } else {
+                        setCheckedDevices(
+                          checkedDevices.filter(
+                            (address) => address !== device.rfAddress
+                          )
+                        );
+                      }
+                    }}
+                    checked={checkedDevices.includes(device.rfAddress)}
+                    id={`${device.rfAddress}`}
+                    type="checkbox"
+                  />
                 </div>
               ))}
             </div>
@@ -91,19 +123,38 @@ const AddCron = (): ReactElement => {
             {description && <p>{description}</p>}
             <div className={styles.inputContainer}>
               <input
-                ref={cronInput}
                 type="text"
                 placeholder="cron"
-                value={cronExpression}
+                value={cronValue}
                 onChange={handleCronChange}
               />
-              <input ref={nameInput} type="text" placeholder="name" />
-              <input ref={tempInput} type="number" placeholder="temp" />
+              <input
+                value={nameValue}
+                onChange={(e) => setNameValue(e.currentTarget.value)}
+                type="text"
+                placeholder="name"
+              />
+              <input
+                value={tempValue}
+                onChange={(e) => setTempValue(Number(e.currentTarget.value))}
+                type="number"
+                placeholder="temp"
+              />
               <div className={styles.oneTime}>
                 <label htmlFor="onetime">One time?</label>
-                <input ref={oneTimeInput} id={`onetime`} type="checkbox" />
+                <input
+                  checked={oneTimeValue}
+                  onChange={(e) => setOneTimeValue(e.currentTarget.checked)}
+                  id={`onetime`}
+                  type="checkbox"
+                />
               </div>
-              <button onClick={addClicked}>add</button>
+              <div className={styles.buttonContainer}>
+                {isUpdate && <button onClick={onUpdateDone}>cancel</button>}
+                <button onClick={addClicked}>
+                  {isUpdate ? "update" : "add"}
+                </button>
+              </div>
             </div>
           </div>
         ) : (

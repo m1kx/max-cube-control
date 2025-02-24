@@ -10,9 +10,13 @@
   grid-template-columns: 100%;
 
   &:hover {
-    grid-template-columns: calc(100% - 52px) 42px;
+    grid-template-columns: calc(100% - 96px) 96px;
     .removeContainer {
       opacity: 1;
+    }
+    .actionContainer {
+      opacity: 1;
+      width: auto;
     }
   }
 }
@@ -25,14 +29,21 @@
   }
 }
 
-.removeContainer {
+.actionContainer {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  height: 42px;
+  display: flex;
+  gap: 5px;
+  transition: all 0.5s;
+}
+
+.action {
   height: 42px;
   aspect-ratio: 1/1;
-  grid-column: 2;
-  grid-row: 1 / 3;
   background-color: #D9D9D910;
   border-radius: 7px;
-  opacity: 0;
   cursor: pointer;
   display: flex;
   justify-content: center;

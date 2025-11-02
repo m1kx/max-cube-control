@@ -117,3 +117,20 @@ export const deleteCron = async (cronName: string): Promise<void> => {
   });
   await response.text();
 };
+
+export const getTimezone = async (): Promise<string> => {
+  const response = await fetch(`${baseUrl}/timezone`, {
+    headers: await getAuth(),
+  });
+  const json: { timezone: string } = await response.json();
+  return json.timezone;
+};
+
+export const setTimezone = async (timezone: string): Promise<void> => {
+  const response = await fetch(`${baseUrl}/settimezone`, {
+    method: "POST",
+    body: JSON.stringify({ timezone }),
+    headers: await getAuth(),
+  });
+  await response.text();
+};

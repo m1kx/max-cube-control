@@ -2,6 +2,7 @@ import { getAllCrons, getAllDevices } from "./actions";
 import CronContainer from "./components/cron/CronContainer";
 import DeviceContainer from "./components/devices/DeviceContainer";
 import styles from "./page.module.scss";
+import TimeZone from "./components/settings/TimeZone";
 
 export default async function Home() {
   const results = await Promise.allSettled([getAllCrons(), getAllDevices()]);
@@ -19,6 +20,7 @@ export default async function Home() {
   return (
     <div className={styles.page}>
       <>
+        <TimeZone />
         <CronContainer crons={crons} />
         <DeviceContainer devices={devices} />
       </>

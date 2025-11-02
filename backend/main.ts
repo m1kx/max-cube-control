@@ -225,13 +225,44 @@ router.post("/updatecron", async (ctx) => {
         };
         return;
       }
-      Database.updateCron({
+      CronHandler.editCron({
         ...cron,
         ...request,
       });
     } catch (error) {
       throw error;
     }
+  } catch (error) {
+    ctx.response.body = {
+      success: false,
+      error: (error as Error).message,
+    };
+    return;
+  }
+});
+
+router.get("/timezone", (ctx) => {
+  ctx.response.body = {
+    success: true,
+    timezone: Database.getTimezone(),
+  };
+});
+
+interface SetTimezoneRequestBody {
+  timezone: string;
+}
+router.post("/settimezone", async (ctx) => {
+  try {
+    const request: SetTimezoneRequestBody = await ctx.request.body.json();
+    if (!request.timezone) {
+      throw new Error("Missing parameter in request body");
+    }
+    Database.setTimezone(request.timezone);
+    CronHandler.abortAllCrons();
+    CronHandler.initializeCrons();
+    ctx.response.body = {
+      success: true,
+    };
   } catch (error) {
     ctx.response.body = {
       success: false,

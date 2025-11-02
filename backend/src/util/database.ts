@@ -172,7 +172,13 @@ const setTimezone = (timezone: string) => {
   if (!db) {
     throw new Error("DB not initialized");
   }
-  db.query("UPDATE settings SET timezone = ?", [timezone]);
+  // create settings entry if it doesn't exist
+  const settings = db.query("SELECT timezone FROM settings WHERE id = 1");
+  if (settings.length === 0) {
+    db.query("INSERT INTO settings (timezone) VALUES (?)", [timezone]);
+  } else {
+    db.query("UPDATE settings SET timezone = ? WHERE id = 1", [timezone]);
+  }
 };
 
 export const Database = {

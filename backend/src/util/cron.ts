@@ -68,6 +68,18 @@ const initializeCron = async (cron: StoreCron) => {
   }
 };
 
+const editCron = (cron: StoreCron) => {
+  removeCron(cron.name);
+  newCron(cron);
+};
+
+const abortAllCrons = () => {
+  for (const cron of cronController.keys()) {
+    console.log(`Aborting ${cronController.get(cron)}`);
+    cronController.get(cron)?.abort();
+  }
+};
+
 const removeCron = (name: string) => {
   Database.removeCron(name);
   console.log(`Abort cron ${name}`);
@@ -78,4 +90,6 @@ export const CronHandler = {
   newCron,
   initializeCrons,
   removeCron,
+  editCron,
+  abortAllCrons,
 };

@@ -19,6 +19,12 @@ export interface StoreCron {
 const create = (name: string) => {
   db = new DB(name);
   db.execute(`
+    CREATE TABLE IF NOT EXISTS settings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      timezone TEXT NOT NULL
+    );
+  `);
+  db.execute(`
     CREATE TABLE IF NOT EXISTS devices (
       rfAddress TEXT PRIMARY KEY,
       name TEXT NOT NULL
@@ -153,6 +159,22 @@ const getAllDevices = (): StoreDevice[] => {
   );
 };
 
+const getTimezone = (): string => {
+  if (!db) {
+    throw new Error("DB not initialized");
+  }
+  return db.query("SELECT timezone FROM settings").map(
+    ([timezone]): string => timezone as string,
+  )?.[0] || "Europe/Berlin";
+};
+
+const setTimezone = (timezone: string) => {
+  if (!db) {
+    throw new Error("DB not initialized");
+  }
+  db.query("UPDATE settings SET timezone = ?", [timezone]);
+};
+
 export const Database = {
   create,
   insert,
@@ -163,4 +185,6 @@ export const Database = {
   removeCron,
   getCronByName,
   updateCron,
+  getTimezone,
+  setTimezone,
 };

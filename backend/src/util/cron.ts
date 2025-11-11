@@ -25,11 +25,11 @@ function convertTimezoneCronToUTC(cronString: string, timezone: string): string 
 
   const timezoneTime = DateTime.now()
     .setZone(timezone)
-    .set({ hour: parseInt(hour), minute: parseInt(minute) });
+    .set({ hour: parseInt(hour) });
 
   const utcTime = timezoneTime.toUTC();
 
-  return `${utcTime.minute} ${utcTime.hour} ${day} ${month} ${dayOfWeek}`;
+  return `${minute} ${utcTime.hour} ${day} ${month} ${dayOfWeek}`;
 }
 
 const initializeCron = async (cron: StoreCron) => {

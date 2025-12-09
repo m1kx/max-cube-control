@@ -41,7 +41,10 @@ const create = (name: string) => {
     );
   `);
   db.execute(`
-    ALTER TABLE settings ADD COLUMN offTemperature REAL NOT NULL DEFAULT 17, onTemperature REAL NOT NULL DEFAULT 20;
+    ALTER TABLE settings ADD COLUMN offTemperature REAL NOT NULL DEFAULT 17;
+  `);
+  db.execute(`
+    ALTER TABLE settings ADD COLUMN onTemperature REAL NOT NULL DEFAULT 20;
   `);
 };
 

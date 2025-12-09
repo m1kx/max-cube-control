@@ -241,6 +241,37 @@ router.post("/updatecron", async (ctx) => {
   }
 });
 
+router.get("/temperaturesettings", (ctx) => {
+  ctx.response.body = {
+    success: true,
+    offTemperature: Database.getTemperatureSettings().offTemperature,
+    onTemperature: Database.getTemperatureSettings().onTemperature,
+  };
+});
+
+interface SetTemperatureSettingsRequestBody {
+  offTemperature: number;
+  onTemperature: number;
+}
+router.post("/settemperaturesettings", async (ctx) => {
+  try {
+    const request: SetTemperatureSettingsRequestBody = await ctx.request.body.json();
+    if (!request.offTemperature || !request.onTemperature) {
+      throw new Error("Missing parameter in request body");
+    }
+    Database.setTemperatureSettings(request.offTemperature, request.onTemperature);
+    ctx.response.body = {
+      success: true,
+    };
+  } catch (error) {
+    ctx.response.body = {
+      success: false,
+      error: (error as Error).message,
+    };
+    return;
+  }
+});
+
 router.get("/timezone", (ctx) => {
   ctx.response.body = {
     success: true,
@@ -274,8 +305,9 @@ router.post("/settimezone", async (ctx) => {
 
 router.get("/alloff", async (ctx) => {
   const deviceList = await controller.getDeviceList();
+  const offTemperature = Database.getTemperatureSettings().offTemperature;
   for (const device of deviceList) {
-    await controller.setTemperature(device.rfAddress, 14);
+    await controller.setTemperature(device.rfAddress, offTemperature);
   }
   ctx.response.body = {
     success: true,
@@ -284,8 +316,9 @@ router.get("/alloff", async (ctx) => {
 
 router.get("/allon", async (ctx) => {
   const deviceList = await controller.getDeviceList();
+  const onTemperature = Database.getTemperatureSettings().onTemperature;
   for (const device of deviceList) {
-    await controller.setTemperature(device.rfAddress, 21);
+    await controller.setTemperature(device.rfAddress, onTemperature);
   }
   ctx.response.body = {
     success: true,

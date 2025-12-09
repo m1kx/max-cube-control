@@ -40,6 +40,9 @@ const create = (name: string) => {
       enabled BOOLEAN DEFAULT TRUE
     );
   `);
+  db.execute(`
+    ALTER TABLE settings ADD COLUMN offTemperature REAL NOT NULL DEFAULT 17, onTemperature REAL NOT NULL DEFAULT 20;
+  `);
 };
 
 const addCron = (
@@ -159,6 +162,29 @@ const getAllDevices = (): StoreDevice[] => {
   );
 };
 
+const getTemperatureSettings = (): { offTemperature: number, onTemperature: number } => {
+  if (!db) {
+    throw new Error("DB not initialized");
+  }
+  return db.query("SELECT offTemperature, onTemperature FROM settings").map(
+    ([offTemperature, onTemperature]): { offTemperature: number, onTemperature: number } => {
+      return {
+        offTemperature: offTemperature as number,
+        onTemperature: onTemperature as number,
+      };
+    },
+  )?.[0] || { offTemperature: 17, onTemperature: 20 };
+};
+
+const setTemperatureSettings = (offTemperature: number, onTemperature: number) => {
+  if (!db) {
+    throw new Error("DB not initialized");
+  }
+  db.execute(`
+    UPDATE settings SET offTemperature = ${offTemperature}, onTemperature = ${onTemperature} WHERE id = 1
+  `);
+};
+
 const getTimezone = (): string => {
   if (!db) {
     throw new Error("DB not initialized");
@@ -193,4 +219,6 @@ export const Database = {
   updateCron,
   getTimezone,
   setTimezone,
+  getTemperatureSettings,
+  setTemperatureSettings,
 };

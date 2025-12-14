@@ -40,12 +40,21 @@ const create = (name: string) => {
       enabled BOOLEAN DEFAULT TRUE
     );
   `);
-  db.execute(`
-    ALTER TABLE settings ADD COLUMN offTemperature REAL NOT NULL DEFAULT 17;
-  `);
-  db.execute(`
-    ALTER TABLE settings ADD COLUMN onTemperature REAL NOT NULL DEFAULT 20;
-  `);
+  // add col if not exists
+  try {
+    db.execute(`
+      ALTER TABLE settings ADD COLUMN offTemperature REAL NOT NULL DEFAULT 17;
+    `);
+  } catch (_error) {
+    // column already exists
+  }
+  try {
+    db.execute(`
+      ALTER TABLE settings ADD COLUMN onTemperature REAL NOT NULL DEFAULT 20;
+    `);
+  } catch (_error) {
+    // column already exists
+  }
 };
 
 const addCron = (
